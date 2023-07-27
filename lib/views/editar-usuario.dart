@@ -28,10 +28,12 @@ class _MyWidgetState extends State<EditarUsuario> {
     nome = TextEditingController(text: widget.model['NOME']);
     usuario = TextEditingController(text: widget.model['USUARIO']);
     valor = TextEditingController(text: widget.model['VALOR'].toString());
-    vencimento = TextEditingController(text: widget.model['VENCIMENTO']);
+    vencimento = TextEditingController(text: converterData());
     descricao = widget.model['DESCRICAO'];
+    vencimentoSelecionando = widget.model['VENCIMENTO'];
   }
 
+  String vencimentoSelecionando = "";
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -43,12 +45,26 @@ class _MyWidgetState extends State<EditarUsuario> {
     if (pickedDate != null) {
       setState(() {
         vencimento.text = DateFormat('dd-MM-yyyy').format(pickedDate);
+        vencimentoSelecionando = DateFormat('yyyy-MM-dd').format(pickedDate);
       });
     }
   }
 
+  String converterData() {
+    List<String> userPartes = widget.model['VENCIMENTO'].toString().split('-');
+
+    int ano = int.parse(userPartes.elementAt(0));
+    int mes = int.parse(userPartes.elementAt(1));
+    int dia = int.parse(userPartes.elementAt(2));
+
+    DateTime data = DateTime(ano, mes, dia);
+
+    return DateFormat('dd-MM-yyyy').format(data);
+  }
+
   bool dataVencida(String user) {
     List<String> userPartes = user.split('-');
+    print(user.toString());
 
     int dia = int.parse(userPartes.elementAt(0));
     int mes = int.parse(userPartes.elementAt(1));
@@ -70,7 +86,7 @@ class _MyWidgetState extends State<EditarUsuario> {
       'NOME': nome.text,
       'USUARIO': usuario.text,
       'VALOR': valor.text,
-      'VENCIMENTO': vencimento.text,
+      'VENCIMENTO': vencimentoSelecionando,
       'DESCRICAO': descricao
     };
 

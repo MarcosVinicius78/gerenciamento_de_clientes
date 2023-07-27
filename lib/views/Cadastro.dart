@@ -11,6 +11,8 @@ class Cadastro extends StatefulWidget {
   State<Cadastro> createState() => _MyWidgetState();
 }
 
+String dataEnviar = "";
+
 class _MyWidgetState extends State<Cadastro> {
   final _formKey = GlobalKey<FormState>();
   List<String> dropDescricao = ['PAGO', 'DEVENDO'];
@@ -26,6 +28,7 @@ class _MyWidgetState extends State<Cadastro> {
     if (pickedDate != null) {
       setState(() {
         data = DateFormat('dd-MM-yyyy').format(pickedDate);
+        dataEnviar = DateFormat('yyyy-MM-dd').format(pickedDate);
       });
     }
   }
@@ -243,7 +246,7 @@ class _MyWidgetState extends State<Cadastro> {
                                 nome: nome,
                                 usuario: usuario,
                                 valor: valor,
-                                vencimento: data,
+                                vencimento: dataEnviar,
                                 descricao: descricao);
                             Database.criarUsuario(user);
                             Navigator.pop(context);

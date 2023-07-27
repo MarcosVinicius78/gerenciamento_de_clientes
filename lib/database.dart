@@ -38,7 +38,6 @@ class Database {
   static Future<List<Map<String, dynamic>>> listarUsuarios() async {
     final dbUsuario = await Database.db();
 
-    // return dbUsuario.query('USUARIOS', groupBy: 'id');
     return dbUsuario
         .rawQuery('''SELECT * FROM USUARIOS ORDER BY VENCIMENTO ASC''');
   }

@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:gerenciamento_de_clientes/database.dart';
 import 'package:gerenciamento_de_clientes/views/editar-usuario.dart';
+import 'package:intl/intl.dart';
 
 import 'Cadastro.dart';
 
@@ -70,12 +71,24 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  String converterData(String data) {
+    List<String> userPartes = data.split('-');
+
+    int ano = int.parse(userPartes.elementAt(0));
+    int mes = int.parse(userPartes.elementAt(1));
+    int dia = int.parse(userPartes.elementAt(2));
+
+    DateTime dataConvertida = DateTime(ano, mes, dia);
+
+    return DateFormat('dd-MM-yyyy').format(dataConvertida);
+  }
+
   bool dataVencida(String user) {
     List<String> userPartes = user.split('-');
 
-    int dia = int.parse(userPartes.elementAt(0));
+    int ano = int.parse(userPartes.elementAt(0));
     int mes = int.parse(userPartes.elementAt(1));
-    int ano = int.parse(userPartes.elementAt(2));
+    int dia = int.parse(userPartes.elementAt(2));
 
     DateTime data = DateTime(ano, mes, dia);
 
@@ -221,7 +234,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                             margin:
                                                 const EdgeInsets.only(top: 0),
                                             child: Text(
-                                                usuarios[index]['VENCIMENTO']
+                                                converterData(usuarios[index]
+                                                        ['VENCIMENTO'])
                                                     .toString(),
                                                 style: TextStyle(
                                                     color: dataVencida(
