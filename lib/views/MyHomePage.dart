@@ -64,9 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  List<Map<String, dynamic>> listaUsuariosBackup = [];
+
   void carregarUsuarios() async {
     final users = await Database.listarUsuarios();
     setState(() {
+      listaUsuariosBackup = users;
       usuarios = users;
     });
   }
@@ -100,6 +103,30 @@ class _MyHomePageState extends State<MyHomePage> {
     return false;
   }
 
+  int valorAnterior = 0;
+
+  void pesquisaDinamica(String valor) {
+    setState(() {
+      if (valor.isEmpty) {
+        usuarios = listaUsuariosBackup;
+      } else if (valor.length < valorAnterior) {
+        usuarios = listaUsuariosBackup;
+        final user = usuarios.where((element) => element['NOME']
+            .toString()
+            .toLowerCase()
+            .contains(valor.toLowerCase()));
+        usuarios = user.toList();
+      } else {
+        final user = usuarios.where((element) => element['NOME']
+            .toString()
+            .toLowerCase()
+            .contains(valor.toLowerCase()));
+        usuarios = user.toList();
+      }
+      valorAnterior = valor.length;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,74 +137,98 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
-            width: MediaQuery.of(context).size.width * 0.95,
-            height: 70,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color.fromARGB(255, 12, 12, 12)),
-            child: CarouselSlider(
-                items: usuariosDevendo.map((usuarios) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditarUsuario(
-                                    model: usuarios,
-                                  )));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 236, 236, 236),
-                          borderRadius: BorderRadius.circular(10)),
-                      margin: const EdgeInsets.only(left: 10),
-                      width: MediaQuery.of(context).size.width * 1,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(top: 10, bottom: 10),
+                width: MediaQuery.of(context).size.width * 0.95,
+                height: 70,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color.fromARGB(255, 12, 12, 12)),
+                child: CarouselSlider(
+                    items: usuariosDevendo.map((usuarios) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditarUsuario(
+                                        model: usuarios,
+                                      )));
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 236, 236, 236),
+                              borderRadius: BorderRadius.circular(10)),
+                          margin: const EdgeInsets.only(left: 10),
+                          width: MediaQuery.of(context).size.width * 1,
+                          child: Column(
                             children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 5),
-                                child: Text(usuarios['NOME']),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 5),
+                                    child: Text(usuarios['NOME']),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 5),
+                                    child: Text(usuarios['USUARIO']),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 5),
+                                    child: Text(usuarios['VALOR'].toString()),
+                                  )
+                                ],
                               ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 5),
-                                child: Text(usuarios['USUARIO']),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 5),
-                                child: Text(usuarios['VALOR'].toString()),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 5),
+                                    child: Text(usuarios['VENCIMENTO']),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 5),
+                                    child: Text(
+                                        dataVencida(usuarios['VENCIMENTO'])
+                                            ? "NÃO RENOVADO"
+                                            : usuarios['DESCRICAO']),
+                                  ),
+                                ],
                               )
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 5),
-                                child: Text(usuarios['VENCIMENTO']),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 5),
-                                child: Text(dataVencida(usuarios['VENCIMENTO'])
-                                    ? "NÃO RENOVADO"
-                                    : usuarios['DESCRICAO']),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-                options: CarouselOptions(
-                    autoPlayCurve: Curves.easeInSine,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3))),
+                        ),
+                      );
+                    }).toList(),
+                    options: CarouselOptions(
+                        autoPlayCurve: Curves.easeInSine,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 3))),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(20)),
+                width: MediaQuery.of(context).size.width * 0.95,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: TextFormField(
+                      onChanged: (value) {
+                        pesquisaDinamica(value);
+                      },
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          icon: Icon(color: Colors.black, Icons.search))),
+                ),
+              )
+            ],
           ),
           Expanded(
             child: Container(
