@@ -64,7 +64,6 @@ class _MyWidgetState extends State<EditarUsuario> {
 
   bool dataVencida(String user) {
     List<String> userPartes = user.split('-');
-    print(user.toString());
 
     int dia = int.parse(userPartes.elementAt(0));
     int mes = int.parse(userPartes.elementAt(1));
@@ -219,7 +218,9 @@ class _MyWidgetState extends State<EditarUsuario> {
                           border: InputBorder.none),
                       readOnly: true,
                       onTap: () {
-                        _selectDate(context);
+                        if (readOnly == false) {
+                          _selectDate(context);
+                        }
                       },
                       controller: vencimento,
                     ),
@@ -229,7 +230,7 @@ class _MyWidgetState extends State<EditarUsuario> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     margin: const EdgeInsets.only(top: 10),
                     child: const Text(
-                      "Descrição",
+                      "Status",
                       style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
                     ),
                   ),
