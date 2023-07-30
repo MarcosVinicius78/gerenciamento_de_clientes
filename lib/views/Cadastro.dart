@@ -66,6 +66,7 @@ class _MyWidgetState extends State<Cadastro> {
   double valor = 0;
   String data = DateFormat('dd-MM-yyyy').format(DateTime.now());
   String descricao = "PAGO";
+  String detalhes = "";
 
   bool _validar = false;
 
@@ -202,7 +203,7 @@ class _MyWidgetState extends State<Cadastro> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   margin: const EdgeInsets.only(top: 10),
                   child: const Text(
-                    "Descrição",
+                    "Status",
                     style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
                   ),
                 ),
@@ -233,6 +234,30 @@ class _MyWidgetState extends State<Cadastro> {
                   ),
                 ),
                 Container(
+                  alignment: Alignment.centerLeft,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  margin: const EdgeInsets.only(top: 10),
+                  child: const Text(
+                    "Detalhes",
+                    style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Color.fromARGB(255, 222, 222, 222)),
+                  child: TextFormField(
+                    onChanged: (newValue) {
+                      detalhes = newValue;
+                    },
+                    decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10),
+                        border: InputBorder.none),
+                  ),
+                ),
+                Container(
                   width: MediaQuery.of(context).size.width * 1,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top: 90),
@@ -247,7 +272,8 @@ class _MyWidgetState extends State<Cadastro> {
                                 usuario: usuario,
                                 valor: valor,
                                 vencimento: dataEnviar,
-                                descricao: descricao);
+                                descricao: descricao,
+                                detalhes: detalhes);
                             Database.criarUsuario(user);
                             Navigator.pop(context);
                           }

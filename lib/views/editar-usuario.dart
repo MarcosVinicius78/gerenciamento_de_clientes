@@ -22,6 +22,7 @@ class _MyWidgetState extends State<EditarUsuario> {
   late TextEditingController valor = TextEditingController(text: "");
   late TextEditingController vencimento = TextEditingController(text: "");
   String descricao = "PAGO";
+  String detalhes = "";
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _MyWidgetState extends State<EditarUsuario> {
     vencimento = TextEditingController(text: converterData());
     descricao = widget.model['DESCRICAO'];
     vencimentoSelecionando = widget.model['VENCIMENTO'];
+    detalhes = widget.model['DETALHES'].toString();
   }
 
   String vencimentoSelecionando = "";
@@ -86,7 +88,8 @@ class _MyWidgetState extends State<EditarUsuario> {
       'USUARIO': usuario.text,
       'VALOR': valor.text,
       'VENCIMENTO': vencimentoSelecionando,
-      'DESCRICAO': descricao
+      'DESCRICAO': descricao,
+      'DETALHES': detalhes
     };
 
     if (_formKey.currentState!.validate()) {
@@ -260,6 +263,34 @@ class _MyWidgetState extends State<EditarUsuario> {
                           });
                         }
                       },
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: const Text(
+                      "Detalhes",
+                      style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Color.fromARGB(255, 222, 222, 222)),
+                    child: TextFormField(
+                      readOnly: readOnly,
+                      initialValue: detalhes,
+                      onChanged: (value) {
+                        setState(() {
+                          detalhes = value;
+                        });
+                      },
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 10),
+                          border: InputBorder.none),
                     ),
                   ),
                   Container(

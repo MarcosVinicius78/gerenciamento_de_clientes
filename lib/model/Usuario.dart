@@ -4,13 +4,15 @@ class UsuarioModel {
   double valor;
   String vencimento;
   String descricao;
+  String detalhes;
 
   UsuarioModel(
       {required this.nome,
       required this.usuario,
       required this.valor,
       required this.vencimento,
-      required this.descricao});
+      required this.descricao,
+      required this.detalhes});
 
   Map<String, dynamic> toMap() {
     return {
@@ -18,7 +20,8 @@ class UsuarioModel {
       'usuario': usuario,
       'valor': valor,
       'vencimento': vencimento,
-      'descricao': descricao
+      'descricao': descricao,
+      'detalhes': detalhes
     };
   }
 
@@ -28,6 +31,7 @@ class UsuarioModel {
         usuario: map['usuario'],
         valor: map['valor'],
         vencimento: map['vencimento'],
-        descricao: map['descricao']);
+        descricao: map['descricao'],
+        detalhes: map['detalhes']);
   }
 }

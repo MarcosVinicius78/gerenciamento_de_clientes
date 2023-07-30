@@ -17,12 +17,12 @@ class Database {
   static Future<sql.Database> db() async {
     return sql.openDatabase(
       "clientes.db",
-      version: 1,
+      version: 2,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
       },
       onUpgrade: (db, oldVersion, newVersion) {
-        createTables(db);
+        db.execute("ALTER TABLE USUARIOS ADD DETALHES TEXT");
       },
     );
   }
@@ -52,6 +52,8 @@ class Database {
     final dbUsuario = await Database.db();
 
     int id = usuario['ID'];
+
+    print(usuario.toString());
 
     return dbUsuario
         .update('USUARIOS', usuario, where: 'id = ?', whereArgs: [id]);

@@ -156,7 +156,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               MaterialPageRoute(
                                   builder: (context) => EditarUsuario(
                                         model: usuarios,
-                                      )));
+                                      ))).then((value) =>
+                              {usuariosDevend(), carregarUsuarios()});
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -324,6 +325,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                         ),
+                        onLongPress: () async {
+                          if (await desejaApagar(context)) {
+                            int id = usuarios[index]['ID'];
+                            Database.apagarUsuario(id);
+                            carregarUsuarios();
+                            usuariosDevend();
+                          } else {}
+                        },
                         onTap: () {
                           Navigator.push(
                                   context,
