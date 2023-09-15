@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:gerenciamento_de_clientes/database.dart';
 import 'package:gerenciamento_de_clientes/views/editar-usuario.dart';
+import 'package:gerenciamento_de_clientes/views/usuarios-devendo.dart';
 import 'package:intl/intl.dart';
 
 import 'Cadastro.dart';
@@ -111,16 +112,26 @@ class _MyHomePageState extends State<MyHomePage> {
         usuarios = listaUsuariosBackup;
       } else if (valor.length < valorAnterior) {
         usuarios = listaUsuariosBackup;
-        final user = usuarios.where((element) => element['NOME']
-            .toString()
-            .toLowerCase()
-            .contains(valor.toLowerCase()));
+        final user = usuarios.where((element) =>
+            element['NOME']
+                .toString()
+                .toLowerCase()
+                .contains(valor.toLowerCase()) ||
+            element['USUARIO']
+                .toString()
+                .toLowerCase()
+                .contains(valor.toLowerCase()));
         usuarios = user.toList();
       } else {
-        final user = usuarios.where((element) => element['NOME']
-            .toString()
-            .toLowerCase()
-            .contains(valor.toLowerCase()));
+        final user = usuarios.where((element) =>
+            element['NOME']
+                .toString()
+                .toLowerCase()
+                .contains(valor.toLowerCase()) ||
+            element['USUARIO']
+                .toString()
+                .toLowerCase()
+                .contains(valor.toLowerCase()));
         usuarios = user.toList();
       }
       valorAnterior = valor.length;
@@ -139,6 +150,25 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Column(
             children: [
+              Container(
+                alignment: Alignment.centerRight,
+                height: 32,
+                margin: const EdgeInsets.only(top: 5),
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Usuariosdevendo(),
+                          )).then(
+                        (value) {
+                          carregarUsuarios();
+                          usuariosDevend();
+                        },
+                      );
+                    },
+                    child: const Text("Ver mais")),
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(top: 10, bottom: 10),

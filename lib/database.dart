@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:gerenciamento_de_clientes/model/Usuario.dart';
 import 'package:sqflite/sqflite.dart' as sql;
+import 'package:path/path.dart';
 
 class Database {
   static Future<void> createTables(sql.Database database) async {
@@ -15,8 +17,11 @@ class Database {
   }
 
   static Future<sql.Database> db() async {
+    final dbPath = await sql.getDatabasesPath();
+    final path = join(dbPath, 'clientes.db');
+
     return sql.openDatabase(
-      "clientes.db",
+      'clientes.db',
       version: 2,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
