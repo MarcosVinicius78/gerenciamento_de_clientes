@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:gerenciamento_de_clientes/database.dart';
+import 'package:gerenciamento_de_clientes/database/database.dart';
 
 import 'editar-usuario.dart';
 
@@ -33,38 +33,42 @@ class _UsuariosdevendoState extends State<Usuariosdevendo> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Usuarios Devendo"),
-        backgroundColor: Colors.black,
+        backgroundColor: const Color.fromARGB(255, 32, 68, 115),
       ),
-      body: usuarios.isEmpty
-          ? Container(
-              alignment: Alignment.center,
-              child: const Text("NENHUM CLIENTE DEVENDO"))
-          : ListView.builder(
-              itemCount: usuarios.length,
-              itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              EditarUsuario(model: usuarios[index]),
-                        )).then((value) => {carregarUsuariosDevendo()});
-                  },
-                  child: Card(
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(usuarios[index]['NOME']),
-                          Text(usuarios[index]['USUARIO']),
-                          Text(usuarios[index]['VALOR'].toString()),
-                        ],
+      body: Container(
+        color: const Color.fromARGB(255, 208, 236, 242),
+        child: usuarios.isEmpty
+            ? Container(
+                alignment: Alignment.center,
+                child: const Text("NENHUM CLIENTE DEVENDO"))
+            : ListView.builder(
+                itemCount: usuarios.length,
+                itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                EditarUsuario(model: usuarios[index]),
+                          )).then((value) => {carregarUsuariosDevendo()});
+                    },
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(usuarios[index]['NOME']),
+                            Text(usuarios[index]['USUARIO']),
+                            Text(usuarios[index]['VALOR'].toString()),
+                          ],
+                        ),
                       ),
-                    ),
-                  )),
-            ),
+                    )),
+              ),
+      ),
     );
   }
 }

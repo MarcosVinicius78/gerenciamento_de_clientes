@@ -1,7 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:gerenciamento_de_clientes/database.dart';
+import 'package:gerenciamento_de_clientes/database/database.dart';
 import 'package:gerenciamento_de_clientes/views/editar-usuario.dart';
+import 'package:gerenciamento_de_clientes/views/relatorio.dart';
 import 'package:gerenciamento_de_clientes/views/usuarios-devendo.dart';
 import 'package:intl/intl.dart';
 
@@ -142,242 +143,258 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: const Color.fromARGB(255, 32, 68, 115),
         title: const Text('Clientes'),
-        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Relatorio(),
+                  ));
+            },
+            icon: const Icon(Icons.analytics_outlined),
+          )
+        ],
       ),
-      body: Column(
-        children: [
-          Column(
-            children: [
-              Container(
-                alignment: Alignment.centerRight,
-                height: 32,
-                margin: const EdgeInsets.only(top: 5),
-                child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Usuariosdevendo(),
-                          )).then(
-                        (value) {
-                          carregarUsuarios();
-                          usuariosDevend();
-                        },
-                      );
-                    },
-                    child: const Text("Ver mais")),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(top: 10, bottom: 10),
-                width: MediaQuery.of(context).size.width * 0.95,
-                height: 70,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color.fromARGB(255, 12, 12, 12)),
-                child: CarouselSlider(
-                    items: usuariosDevendo.map((usuarios) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditarUsuario(
-                                        model: usuarios,
-                                      ))).then((value) =>
-                              {usuariosDevend(), carregarUsuarios()});
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 236, 236, 236),
-                              borderRadius: BorderRadius.circular(10)),
-                          margin: const EdgeInsets.only(left: 10),
-                          width: MediaQuery.of(context).size.width * 1,
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 5),
-                                    child: Text(usuarios['NOME']),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 5),
-                                    child: Text(usuarios['USUARIO']),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 5),
-                                    child: Text(usuarios['VALOR'].toString()),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 5),
-                                    child: Text(usuarios['VENCIMENTO']),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 5),
-                                    child: Text(
-                                        dataVencida(usuarios['VENCIMENTO'])
-                                            ? "NÃO RENOVADO"
-                                            : usuarios['DESCRICAO']),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                    options: CarouselOptions(
-                        autoPlayCurve: Curves.easeInSine,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 3))),
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(20)),
-                width: MediaQuery.of(context).size.width * 0.95,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 12),
-                  child: TextFormField(
-                      onChanged: (value) {
-                        pesquisaDinamica(value);
+      body: Container(
+        color: const Color.fromARGB(255, 208, 236, 242),
+        child: Column(
+          children: [
+            Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerRight,
+                  height: 32,
+                  margin: const EdgeInsets.only(top: 5),
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Usuariosdevendo(),
+                            )).then(
+                          (value) {
+                            carregarUsuarios();
+                            usuariosDevend();
+                          },
+                        );
                       },
-                      decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          icon: Icon(color: Colors.black, Icons.search))),
+                      child: const Text("Ver mais")),
                 ),
-              )
-            ],
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15))),
-              child: usuarios.isEmpty
-                  ? SizedBox(
-                      width: MediaQuery.of(context).size.width * 1,
-                      child: const Text(
-                        "SEM CLIENTES",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
-                      ))
-                  : ListView.builder(
-                      itemCount: usuarios.length,
-                      itemBuilder: (context, index) => GestureDetector(
-                        child: Card(
-                          color: const Color.fromARGB(255, 236, 236, 236),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(top: 10, bottom: 10),
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  height: 70,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color.fromARGB(255, 32, 68, 115)),
+                  child: CarouselSlider(
+                      items: usuariosDevendo.map((usuarios) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditarUsuario(
+                                          model: usuarios,
+                                        ))).then((value) =>
+                                {usuariosDevend(), carregarUsuarios()});
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                                borderRadius: BorderRadius.circular(10)),
+                            margin: const EdgeInsets.only(left: 10),
+                            width: MediaQuery.of(context).size.width * 1,
+                            child: Column(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(usuarios[index]['NOME']),
-                                        Container(
-                                            margin:
-                                                const EdgeInsets.only(left: 20),
-                                            child: Text(
-                                                usuarios[index]['USUARIO'])),
-                                        Container(
-                                          margin:
-                                              const EdgeInsets.only(left: 20),
-                                          child: Text(usuarios[index]['VALOR']
-                                              .toString()),
-                                        )
-                                      ],
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 5),
+                                      child: Text(usuarios['NOME']),
                                     ),
                                     Container(
-                                      margin: const EdgeInsets.only(top: 10),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin:
-                                                const EdgeInsets.only(top: 0),
-                                            child: Text(
-                                                converterData(usuarios[index]
-                                                        ['VENCIMENTO'])
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    color: dataVencida(
-                                                            usuarios[index]
-                                                                ['VENCIMENTO'])
-                                                        ? Colors.red
-                                                        : Colors.green)),
-                                          ),
-                                          Container(
-                                            margin:
-                                                const EdgeInsets.only(left: 10),
-                                            child: Text(dataVencida(
-                                                    usuarios[index]
-                                                        ['VENCIMENTO'])
-                                                ? "NÃO RENOVADO"
-                                                : usuarios[index]['DESCRICAO']
-                                                    .toString()),
-                                          )
-                                        ],
-                                      ),
+                                      margin: const EdgeInsets.only(top: 5),
+                                      child: Text(usuarios['USUARIO']),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 5),
+                                      child: Text(usuarios['VALOR'].toString()),
                                     )
                                   ],
                                 ),
-                                IconButton(
-                                    onPressed: () async {
-                                      if (await desejaApagar(context)) {
-                                        int id = usuarios[index]['ID'];
-                                        Database.apagarUsuario(id);
-                                        carregarUsuarios();
-                                        usuariosDevend();
-                                      } else {}
-                                    },
-                                    icon: const Icon(Icons.delete))
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 5),
+                                      child: Text(usuarios['VENCIMENTO']),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 5),
+                                      child: Text(
+                                          dataVencida(usuarios['VENCIMENTO'])
+                                              ? "NÃO RENOVADO"
+                                              : usuarios['DESCRICAO']),
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
                           ),
-                        ),
-                        onLongPress: () async {
-                          if (await desejaApagar(context)) {
-                            int id = usuarios[index]['ID'];
-                            Database.apagarUsuario(id);
-                            carregarUsuarios();
-                            usuariosDevend();
-                          } else {}
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                          autoPlayCurve: Curves.easeInSine,
+                          autoPlay: true,
+                          autoPlayInterval: const Duration(seconds: 3))),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(20)),
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: TextFormField(
+                        onChanged: (value) {
+                          pesquisaDinamica(value);
                         },
-                        onTap: () {
-                          Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditarUsuario(model: usuarios[index]),
-                                  ))
-                              .then((value) =>
-                                  {carregarUsuarios(), usuariosDevend()});
-                        },
-                      ),
-                    ),
+                        decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(color: Colors.black, Icons.search))),
+                  ),
+                )
+              ],
             ),
-          ),
-        ],
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 32, 68, 115),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15))),
+                child: usuarios.isEmpty
+                    ? SizedBox(
+                        width: MediaQuery.of(context).size.width * 1,
+                        child: const Text(
+                          "SEM CLIENTES",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        ))
+                    : ListView.builder(
+                        itemCount: usuarios.length,
+                        itemBuilder: (context, index) => GestureDetector(
+                          child: Card(
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text(usuarios[index]['NOME']),
+                                          Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 20),
+                                              child: Text(
+                                                  usuarios[index]['USUARIO'])),
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(left: 20),
+                                            child: Text(usuarios[index]['VALOR']
+                                                .toString()),
+                                          )
+                                        ],
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 10),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              margin:
+                                                  const EdgeInsets.only(top: 0),
+                                              child: Text(
+                                                  converterData(usuarios[index]
+                                                          ['VENCIMENTO'])
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: dataVencida(
+                                                              usuarios[index][
+                                                                  'VENCIMENTO'])
+                                                          ? Colors.red
+                                                          : Colors.green)),
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 10),
+                                              child: Text(dataVencida(
+                                                      usuarios[index]
+                                                          ['VENCIMENTO'])
+                                                  ? "NÃO RENOVADO"
+                                                  : usuarios[index]['DESCRICAO']
+                                                      .toString()),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  IconButton(
+                                      onPressed: () async {
+                                        if (await desejaApagar(context)) {
+                                          int id = usuarios[index]['ID'];
+                                          Database.apagarUsuario(id);
+                                          carregarUsuarios();
+                                          usuariosDevend();
+                                        } else {}
+                                      },
+                                      icon: const Icon(Icons.delete))
+                                ],
+                              ),
+                            ),
+                          ),
+                          onLongPress: () async {
+                            if (await desejaApagar(context)) {
+                              int id = usuarios[index]['ID'];
+                              Database.apagarUsuario(id);
+                              carregarUsuarios();
+                              usuariosDevend();
+                            } else {}
+                          },
+                          onTap: () {
+                            Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditarUsuario(model: usuarios[index]),
+                                    ))
+                                .then((value) =>
+                                    {carregarUsuarios(), usuariosDevend()});
+                          },
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

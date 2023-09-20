@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gerenciamento_de_clientes/database/database-relatorio.dart';
 import 'package:gerenciamento_de_clientes/views/MyHomePage.dart';
-import 'package:gerenciamento_de_clientes/database.dart';
+import 'package:gerenciamento_de_clientes/database/database.dart';
 import 'package:gerenciamento_de_clientes/model/Usuario.dart';
 import 'package:intl/intl.dart';
 
@@ -68,220 +69,227 @@ class _MyWidgetState extends State<Cadastro> {
   String descricao = "PAGO";
   String detalhes = "";
 
-  bool _validar = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Cadastro"),
-          backgroundColor: Colors.black,
-        ),
+            title: const Text("Cadastro"),
+            backgroundColor: const Color.fromARGB(255, 32, 68, 115)),
         body: SingleChildScrollView(
             child: Form(
           key: _formKey,
-          child: Center(
-            child: Column(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  margin: const EdgeInsets.only(top: 10),
-                  child: const Text(
-                    "Nome",
-                    style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+          child: Container(
+            color: const Color.fromARGB(255, 208, 236, 242),
+            child: Center(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: const Text(
+                      "Nome",
+                      style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                    ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color.fromARGB(255, 222, 222, 222)),
-                  child: TextFormField(
-                    onChanged: (newValue) {
-                      nome = newValue;
-                    },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Insira o nome";
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10),
-                        border: InputBorder.none),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    child: TextFormField(
+                      onChanged: (newValue) {
+                        nome = newValue;
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Insira o nome";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 10),
+                          border: InputBorder.none),
+                    ),
                   ),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  margin: const EdgeInsets.only(top: 10),
-                  child: const Text(
-                    "Usuario",
-                    style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: const Text(
+                      "Usuario",
+                      style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                    ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: Color.fromARGB(255, 255, 255, 255)),
+                          child: TextFormField(
+                              onChanged: (value) {
+                                usuario = value;
+                              },
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Insira o Usuario";
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.only(left: 10),
+                                  border: InputBorder.none)),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.2,
                         decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: Color.fromARGB(255, 222, 222, 222)),
+                            color: Color.fromARGB(255, 255, 255, 255)),
                         child: TextFormField(
                             onChanged: (value) {
-                              usuario = value;
+                              valor = double.parse(value);
                             },
+                            keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return "Insira o Usuario";
+                                return "Insira o Valor";
                               }
                             },
                             decoration: const InputDecoration(
                                 contentPadding: EdgeInsets.only(left: 10),
+                                prefixText: "R\$",
                                 border: InputBorder.none)),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.2,
-                      decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: Color.fromARGB(255, 222, 222, 222)),
-                      child: TextFormField(
-                          onChanged: (value) {
-                            valor = double.parse(value);
-                          },
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Insira o Valor";
-                            }
-                          },
-                          decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.only(left: 10),
-                              prefixText: "R\$",
-                              border: InputBorder.none)),
-                    )
-                  ],
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  margin: const EdgeInsets.only(top: 10),
-                  child: const Text(
-                    "Vencimento",
-                    style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                      )
+                    ],
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color.fromARGB(255, 222, 222, 222)),
-                  child: TextFormField(
-                      validator: (value) {
-                        if (dataVencida(value.toString())) {
-                          return "Coloque mais de 30 dias";
-                        }
-                        return null;
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: const Text(
+                      "Vencimento",
+                      style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    child: TextFormField(
+                        validator: (value) {
+                          if (dataVencida(value.toString())) {
+                            return "Coloque mais de 30 dias";
+                          }
+                          return null;
+                        },
+                        readOnly: true,
+                        onTap: () {
+                          _selectDate(context);
+                        },
+                        controller: TextEditingController(text: data),
+                        decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 10),
+                            border: InputBorder.none)),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: const Text(
+                      "Status",
+                      style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      underline: Container(),
+                      value: descricao,
+                      items: dropDescricao
+                          .map<DropdownMenuItem<String>>((String valor) {
+                        return DropdownMenuItem(
+                            value: valor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(valor),
+                            ));
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          descricao = value.toString();
+                        });
                       },
-                      readOnly: true,
-                      onTap: () {
-                        _selectDate(context);
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: const Text(
+                      "Detalhes",
+                      style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    child: TextFormField(
+                      onChanged: (newValue) {
+                        detalhes = newValue;
                       },
-                      controller: TextEditingController(text: data),
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10),
-                          border: InputBorder.none)),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  margin: const EdgeInsets.only(top: 10),
-                  child: const Text(
-                    "Status",
-                    style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
+                          border: InputBorder.none),
+                    ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color.fromARGB(255, 222, 222, 222)),
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    underline: Container(),
-                    value: descricao,
-                    items: dropDescricao
-                        .map<DropdownMenuItem<String>>((String valor) {
-                      return DropdownMenuItem(
-                          value: valor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Text(valor),
-                          ));
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        descricao = value.toString();
-                      });
-                    },
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  margin: const EdgeInsets.only(top: 10),
-                  child: const Text(
-                    "Detalhes",
-                    style: TextStyle(fontSize: 20, fontFamily: 'Futura'),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color.fromARGB(255, 222, 222, 222)),
-                  child: TextFormField(
-                    onChanged: (newValue) {
-                      detalhes = newValue;
-                    },
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10),
-                        border: InputBorder.none),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 1,
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.only(top: 90),
-                  child: SizedBox(
-                    width: 250,
-                    height: 50,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            UsuarioModel user = UsuarioModel(
-                                nome: nome,
-                                usuario: usuario,
-                                valor: valor,
-                                vencimento: dataEnviar,
-                                descricao: descricao,
-                                detalhes: detalhes);
-                            Database.criarUsuario(user);
-                            Navigator.pop(context);
-                          }
-                        },
-                        child: const Text("Salvar")),
-                  ),
-                )
-              ],
+                  Container(
+                    width: MediaQuery.of(context).size.width * 1,
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(top: 90),
+                    child: SizedBox(
+                      width: 250,
+                      height: 50,
+                      child: ElevatedButton(
+                          style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  Color.fromARGB(255, 126, 140, 105))),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              UsuarioModel user = UsuarioModel(
+                                  nome: nome,
+                                  usuario: usuario,
+                                  valor: valor,
+                                  vencimento: dataEnviar,
+                                  descricao: descricao,
+                                  detalhes: detalhes);
+                              if (descricao == 'PAGO') {
+                                DatabaseRelatorio.atualizarTotalMesEAno(valor);
+                              }
+                              Database.criarUsuario(user);
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: const Text("Salvar")),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         )));
