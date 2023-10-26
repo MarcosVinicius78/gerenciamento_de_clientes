@@ -321,6 +321,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 const EdgeInsets.only(left: 20),
                                             child: Text(usuarios[index]['VALOR']
                                                 .toString()),
+                                          ),
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(left: 20),
+                                            child: Text(usuarios[index]['LUCRO']
+                                                .toString()),
                                           )
                                         ],
                                       ),

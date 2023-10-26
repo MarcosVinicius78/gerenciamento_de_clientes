@@ -93,8 +93,6 @@ class _RelatorioState extends State<Relatorio> {
                           return const TextStyle(color: Colors.white);
                         },
                         getTitles: (value) {
-                          
-
                           return value.toInt().toString();
                         },
                       ),

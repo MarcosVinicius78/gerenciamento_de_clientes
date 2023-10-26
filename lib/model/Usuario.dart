@@ -2,6 +2,7 @@ class UsuarioModel {
   String nome;
   String usuario;
   double valor;
+  double lucro;
   String vencimento;
   String descricao;
   String detalhes;
@@ -10,6 +11,7 @@ class UsuarioModel {
       {required this.nome,
       required this.usuario,
       required this.valor,
+      required this.lucro,
       required this.vencimento,
       required this.descricao,
       required this.detalhes});
@@ -19,6 +21,7 @@ class UsuarioModel {
       'nome': nome,
       'usuario': usuario,
       'valor': valor,
+      'lucro': lucro,
       'vencimento': vencimento,
       'descricao': descricao,
       'detalhes': detalhes
@@ -30,6 +33,7 @@ class UsuarioModel {
         nome: map['nome'],
         usuario: map['usuario'],
         valor: map['valor'],
+        lucro: map['lucro'],
         vencimento: map['vencimento'],
         descricao: map['descricao'],
         detalhes: map['detalhes']);

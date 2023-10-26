@@ -23,8 +23,8 @@ class Database {
     final path = join(dbPath, 'clientes.db');
 
     return sql.openDatabase(
-      'clientes.db',
-      version: 14,
+      path,
+      version: 15,
       onCreate: (sql.Database database, int version) async {
         database.transaction((txn) async {
           await txn.execute("""
@@ -33,6 +33,7 @@ class Database {
                           NOME TEXT,
                           USUARIO TEXT,
                           VALOR DOUBLE,
+                          LUCRO DOUBLE,
                           VENCIMENTO DATE,
                           DESCRICAO TEXT,
                           DETALHES TEXT
@@ -55,28 +56,7 @@ class Database {
         });
       },
       onUpgrade: (db, oldVersion, newVersion) {
-        db.transaction((txn) async {
-          try {
-            txn.execute("drop table ano_mes");
-            txn.execute("drop table ano");
-            txn.execute("drop table mes");
-
-            txn.execute('''CREATE TABLE mes (
-                          id_mes INTEGER PRIMARY KEY AUTOINCREMENT,
-                          mes INTEGER,
-                          total REAL
-                          )''');
-            txn.execute('''CREATE TABLE ano (
-                          id_ano INTEGER PRIMARY KEY AUTOINCREMENT,
-                          ano INTEGER,
-                          total REAL
-                          )''');
-            txn.execute('''CREATE TABLE ano_mes (
-                          id_ano REFERENCES ano (id_ano),
-                          id_mes REFERENCES mes (id_mes) 
-                          )''');
-          } catch (e) {}
-        });
+        db.execute("ALTER TABLE USUARIOS ADD COLUMN LUCRO DOUBLE");
       },
     );
   }
